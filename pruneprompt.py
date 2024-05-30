@@ -22,7 +22,7 @@ class PrunedPromptOutput(BaseInvocationOutput):
             title="Prune/Clean Prompts",
             tags=["prompts", "prune", "clean", "text", "strings", "formatting"],
             category="prompt",
-            version="1.0.0")
+            version="1.0.1")
 class PruneTextInvocation(BaseInvocation):
     """Like home staging but for prompt text"""
 
@@ -63,8 +63,9 @@ class PruneTextInvocation(BaseInvocation):
                     # after blacklist
                     content = re.sub(r"\(\s+(?=[\w\"'\\])", r"(", content)  # move back weighting after blacklist
                     content = re.sub(r"\[\s+(?=[\w\"'\\])", r"[", content)  # move back weighting after blacklist
-                    content = re.sub(r"(?<![\w!?\"'.;])(:\d.\d+)|(?<![\w!?\"'.;\]])([)\]]\d.\d+)"
-                                     r"|(?<![\D!?\"'.;])([)\]]+[+-]+)", "", content)  # floating numeric/+- weighting
+                    content = re.sub(r"(?<![\w!?\"'.;])(:\d.\d+)|(?<![\w!?\"'.;\]])([)\]]\d.\d+)|"
+                                     r"(?<![\D!?\"'.;])([)\]]+[+-]+)|(?<=,)(\s+\++)", "", content)  # floating
+                    # numeric/+- weighting
                     content = re.sub(r"[([]+(?![\w\"'])", "", content)  # floating first bracket/parens
                     content = re.sub(r"[\[(]+(?!\w+)[)\]]+", "", content)  # floating bracket/parens
 
