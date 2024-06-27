@@ -19,4 +19,6 @@ Some useful applications:
 
 For your blacklist.txt, just put whatever you want on separate newlines. An example .txt of annoying style terms that [nightmare-promptgen-XL](https://huggingface.co/cactusfriend/nightmare-promptgen-XL) generates all the time is included as an example.
 
+Use tagremovescript.py via terminal with `python tagremovescript.py` like normal. Edit the .py directly to configure it because I'm too lazy to set up anything else.
+
 The code for this was originally just for a script to help preprocess a dataset of images generated in Invoke (mainly with prompts from the [nightmare-promptgen](https://github.com/gogurtenjoyer/nightmare-promptgen) node) for training, so uh, this was kind of an afterthought and not rigorously tested.
