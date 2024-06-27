@@ -22,7 +22,7 @@ class PrunedPromptOutput(BaseInvocationOutput):
             title="Prune/Clean Prompts",
             tags=["prompts", "prune", "clean", "text", "strings", "formatting"],
             category="prompt",
-            version="1.0.1")
+            version="1.0.2")
 class PruneTextInvocation(BaseInvocation):
     """Like home staging but for prompt text"""
 
@@ -63,9 +63,9 @@ class PruneTextInvocation(BaseInvocation):
                     # after blacklist
                     content = re.sub(r"\(\s+(?=[\w\"'\\])", r"(", content)  # move back weighting after blacklist
                     content = re.sub(r"\[\s+(?=[\w\"'\\])", r"[", content)  # move back weighting after blacklist
-                    content = re.sub(r"(?<![\w!?\"'.;])(:\d.\d+)|(?<![\w!?\"'.;\]])([)\]]\d.\d+)|"
-                                     r"(?<![\D!?\"'.;])([)\]]+[+-]+)|(?<=,)(\s+\++)", "", content)  # floating
-                    # numeric/+- weighting
+                    content = re.sub(r"((?<![\w!?\"'.;])(:\d.\d+)|(?<![\w!?\"'.;\]])([)\]]\d.\d+)|"
+                                     r"(?<![\D!?\"'.;])([)\]]+[+-]+)|(?<=,)(\s+[+-]+)"
+                                     r"|(?<=,)([+-]+))", "", content)  # floating numeric/+- weighting
                     content = re.sub(r"[([]+(?![\w\"'])", "", content)  # floating first bracket/parens
                     content = re.sub(r"[\[(]+(?!\w+)[)\]]+", "", content)  # floating bracket/parens
 
@@ -93,9 +93,11 @@ class PruneTextInvocation(BaseInvocation):
         content = re.sub(r"\s+(?=[.,!?;:])", "", content)  # delete whitespace before punctuation
         content = re.sub(r"\s+(?=['\"*](?!\w))", "", content)  # delete whitespace before apostrophes and
         # quotation mark and *
-        content = re.sub(r"([,;?!])(?![\\,!?.\s\"*':;)\]])|(?<![A-Z\d])(\.)(?![\d\s\\,!?.\s\"*':;)\]])|"
-                         r"(?<=[A-Z])(\.)(?=[a-z])|(?<=[a-z])(\.)(?=[A-Z])|(:)(?!\d\.\d)(?![\s\"'])|"
-                         r"(?<=[\"'])([.,;!?:])(?=[\"'])|([.,;!?:\w])(?=\"\w)", r"\g<0> ", content)  # punctuation
+        content = re.sub(r"([,;?!])(?![\\,!?.\s\"*':;)\]])|"
+                         r"(?<![A-Z\d])(\.)(?![\d\s\\,!?.\"*':;)\]])(?![a-z].)|(?<=[A-Z])(\.)(?=[a-z])|"
+                         r"(?<=[a-z])(\.)(?=[A-Z])|(:)(?!\d\.\d)(?![\s\"'])(?!\d\d)|"
+                         r"(?<=[\"'])([.,;!?:])(?=[\"'])|"
+                         r"([.,;!?:\w])(?=\"\w)", r"\g<0> ", content)  # punctuation
         # spacing and whitespace fix
         content = re.sub(r"\s+-+(?=\w)|(?<=[.,;!?:])(-+)(?=\w)", " ", content)  # sometimes - behind text
         # when text deleted
